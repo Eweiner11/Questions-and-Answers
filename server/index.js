@@ -14,20 +14,14 @@ app.get("/qa/:product_id", (req, res) => {
     results: [],
   };
   db.query(
-    `SELECT 
-      q.question_id, q.question_body, q.question_date, q.asker_name,q.question_helpfullness, 
-      JSON_ARRAYAGG(JSON_OBJECT('id', a.answer_id, 'body', a.body, 'date', a.date_written , 'a.answerer_name',
-      a.answerer_name, 'helpfulness',a.helpfulness, "photos",[p.url])) as answers
-     FROM questions q
-     LEFT JOIN answers a ON a.question_id = q.question_id
-     LEFT JOIN photos p ON a.answer_id = p.answer_id
-            
-    WHERE product_id = ${
-      resultData.product_id
-    } AND q.reported = 0 GROUP BY q.question_id  limit ${count} offset ${
-      count * page
-    };         
-`,
+ `SELECT q.question_id, q.question_body, q.question_date, q.asker_name,q.question_helpfullness,
+     JSON_ARRAYAGG(JSON_OBJECT('id', a.answer_id, 'body', a.body, 'date', a.date_written, 'answerer_name', a.answerer_name, 'helpfulness',a.helpfulness,'photos',)) as answers
+     FROM questions q LEFT JOIN answers a ON q.question_id = a.question_id
+    WHERE q.product_id = ${resultData.product_id} AND q.reported = 0
+    GROUP by q.question_id 
+    LIMIT 20
+`,       
+
     (err, data) => {
       if (err) {
         console.log(err);

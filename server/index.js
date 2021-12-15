@@ -15,7 +15,7 @@ app.get("/qa/:product_id", (req, res) => {
   };
   db.query(
  `SELECT q.question_id, q.question_body, q.question_date, q.asker_name,q.question_helpfullness,
-     JSON_ARRAYAGG(JSON_OBJECT('id', a.answer_id, 'body', a.body, 'date', a.date_written, 'answerer_name', a.answerer_name, 'helpfulness',a.helpfulness,'photos',)) as answers
+     JSON_ARRAYAGG(JSON_OBJECT('id', a.answer_id, 'body', a.body, 'date', a.date_written, 'answerer_name', a.answerer_name, 'helpfulness',a.helpfulness)) as answers
      FROM questions q LEFT JOIN answers a ON q.question_id = a.question_id
     WHERE q.product_id = ${resultData.product_id} AND q.reported = 0
     GROUP by q.question_id 
